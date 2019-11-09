@@ -1,5 +1,6 @@
 {
   "name": "mp3-player",
+  "description": "Browser MP3 player using Chrome(v78+) native file system",
   "version": "0.1.0",
   "private": true,
   "scripts": {
