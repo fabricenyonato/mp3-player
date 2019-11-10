@@ -4,6 +4,7 @@ import Home from './home.vue';
 import Albums from './albums.vue';
 import Artists from './artists.vue';
 import Titles from './titles.vue';
+import Playlist from './playlist.vue';
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,10 @@ const routes = [
             {
                 path: '/artists',
                 component: Artists,
+            },
+            {
+                path: '/playlist',
+                component: Playlist,
             },
         ]
     },

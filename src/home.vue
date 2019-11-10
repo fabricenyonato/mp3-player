@@ -7,6 +7,10 @@
 
             <v-spacer />
 
+            <v-btn icon @click="addMusics">
+                <v-icon>mdi-music-note-plus</v-icon>
+            </v-btn>
+
             <v-btn icon>
                 <v-icon>mdi-settings-outline</v-icon>
             </v-btn>
@@ -16,6 +20,7 @@
                     <v-tab to="/artists">Artists</v-tab>
                     <v-tab to="/albums">Albums</v-tab>
                     <v-tab to="/titles">Titles</v-tab>
+                    <v-tab to="/playlist">Playlist</v-tab>
                 </v-tabs>
             </template>
         </v-app-bar>
@@ -30,9 +35,21 @@
 
 <script>
     import AppPlayer from './player.vue';
+    import {mutation} from './var';
 
     export default {
-        components: {AppPlayer}
+        components: {AppPlayer},
+        methods: {
+            async addMusics() {
+                try {
+                    await this.$store.commit(mutation.addFileHandle);
+                    console.log(this.$store.state.mp3FilesHandles);
+                }
+                catch (e) {
+                    console.error(e);
+                }
+            }
+        }
     };
 </script>
 

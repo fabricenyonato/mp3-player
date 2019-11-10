@@ -2,7 +2,7 @@
     <div id="player" class="flex-shrink-0 flex-grow-0 d-flex elevation-4">
         <div class="flex-grow-0 flex-shrink-0">
             <v-list style="background-color: transparent;">
-                <v-list-item>
+                <v-list-item to="/playlist">
                     <v-list-item-avatar>
                         <v-icon class="purple white--text">mdi-album</v-icon>
                     </v-list-item-avatar>
@@ -53,19 +53,42 @@
             </div>
 
             <div class="d-flex align-center">
-                <v-btn icon>
+                <v-btn icon @click="volume -= volStep" :disabled="volume === 0">
                     <v-icon>mdi-volume-minus</v-icon>
                 </v-btn>
 
-                <v-slider :value="50" hide-details style="width: 100px;" />
+                <v-slider
+                    v-model="volume"
+                    hide-details
+                    style="width: 100px;"
+                    :min="0"
+                    :max="100"
+                    :step="volStep"
+                />
 
-                <v-btn icon>
+                <v-btn icon @click="volume += volStep" :disabled="volume === 100">
                     <v-icon>mdi-volume-plus</v-icon>
                 </v-btn>
             </div>
         </div>
     </div>
 </template>
+
+<script>
+    export default {
+        data: () => ({
+            volume: 50,
+        }),
+        methods: {
+            changeVolume(sens) {
+                const step = ((sens === '+') ? 1 : -1) * 10;
+            }
+        },
+        computed: {
+            volStep: () => 10,
+        }
+    }
+</script>
 
 <style lang="scss" scoped>
     // #cover {
