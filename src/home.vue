@@ -43,7 +43,8 @@
             async addMusics() {
                 try {
                     await this.$store.commit(mutation.addFileHandle);
-                    console.log(this.$store.state.mp3FilesHandles);
+                    // console.log(this.$store.state.mp3FilesHandles);
+                    console.log(this.$store.state.albums);
                 }
                 catch (e) {
                     console.error(e);
