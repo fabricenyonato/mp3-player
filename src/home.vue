@@ -7,7 +7,7 @@
 
             <v-spacer />
 
-            <v-btn icon @click="addMusics">
+            <v-btn icon @click="addMusic">
                 <v-icon>mdi-music-note-plus</v-icon>
             </v-btn>
 
@@ -34,23 +34,15 @@
 </template>
 
 <script>
+    import {mapActions} from 'vuex';
     import AppPlayer from './player.vue';
-    import {mutation} from './var';
+    import {action} from './var';
 
     export default {
         components: {AppPlayer},
         methods: {
-            async addMusics() {
-                try {
-                    await this.$store.commit(mutation.addFileHandle);
-                    // console.log(this.$store.state.mp3FilesHandles);
-                    console.log(this.$store.state.albums);
-                }
-                catch (e) {
-                    console.error(e);
-                }
-            }
-        }
+            ...mapActions([action.addMusic])
+        },
     };
 </script>
 

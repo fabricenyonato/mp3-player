@@ -1,7 +1,7 @@
 <template>
     <v-row class="ma-0 pr-4 pb-4" no-gutters>
         <v-col
-            v-for="(album, albumName, n) in $store.state.albums"
+            v-for="(album, n) in albums"
             :key="n"
             class="d-flex child-flex pl-4 pt-4"
             sm="4"
@@ -19,8 +19,8 @@
                     >
                         <v-list-item to="/playlist" class="white">
                             <v-list-item-content>
-                                <v-list-item-title>{{albumName}}</v-list-item-title>
-                                <v-list-item-subtitle>{{album[0].tags.common.albumartist}}</v-list-item-subtitle>
+                                <v-list-item-title>{{album.name}}</v-list-item-title>
+                                <!-- <v-list-item-subtitle>{{album[0].tags.common.albumartist}}</v-list-item-subtitle> -->
                             </v-list-item-content>
                         </v-list-item>
                     </v-img>
@@ -41,12 +41,11 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
+
     export default {
-        methods: {
-            l(e) {
-                console.log(e);
-                return '2';
-            }
-        }
+        computed: {
+            ...mapGetters(['albums']),
+        },
     };
 </script>
