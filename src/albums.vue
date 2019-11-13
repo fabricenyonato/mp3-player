@@ -12,21 +12,20 @@
             <v-hover v-slot:default="{hover}">
                 <v-card>
                     <v-img
-                        :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+                        :src="album.cover"
                         aspect-ratio="1"
                         class="align-end"
                     >
                         <v-list-item to="/playlist" class="white">
                             <v-list-item-content>
                                 <v-list-item-title>{{album.name}}</v-list-item-title>
-                                <!-- <v-list-item-subtitle>{{album[0].tags.common.albumartist}}</v-list-item-subtitle> -->
+                                <v-list-item-subtitle>{{album.artist}}</v-list-item-subtitle>
                             </v-list-item-content>
                         </v-list-item>
                     </v-img>
 
                     <v-overlay absolute v-if="hover">
-                        <v-btn icon x-large>
+                        <v-btn icon x-large class="mr-2">
                             <v-icon>mdi-play</v-icon>
                         </v-btn>
 

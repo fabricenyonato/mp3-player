@@ -15,7 +15,7 @@ export default new Vuex.Store({
         [mutation.ADD_SONGS] ({songs}, newSongs) {
             songs.push(...newSongs);
         },
-        [mutation.ADD_SONG_TO_ALBUM] ({albums}, {albumName, handle, tags}) {
+        [mutation.ADD_SONG_TO_ALBUM] ({albums}, {albumName, handle, tags, albumArtist, cover}) {
             let album = albums.findIndex((i) => i.name === albumName);
 
             if (album === -1) {
@@ -27,14 +27,22 @@ export default new Vuex.Store({
                 album = newLength - 1;
             }
 
-            albums[album].titles.push({/* handle, tags */});
+            if (!albums[album].artist) {
+                albums[album].artist = albumArtist;
+            }
+
+            if (!albums[album].cover) {
+                albums[album].cover = cover;
+            }
+
+            albums[album].titles.push({handle, tags});
         },
     },
     actions: {
         async [action.addMusic] ({commit}) {
             try {
                 const filesHandles = await getMP3FilesHandles();
-                
+
                 for (const handle of filesHandles) {
                     /**
                      * @type {File}
@@ -45,35 +53,50 @@ export default new Vuex.Store({
                         /**
                          * @type {File}
                          */
-                        const _file = await handle.getFile();
+                        file = await handle.getFile();
 
-                        if (_file.type !== 'audio/mp3') {
+                        if (file.type !== 'audio/mp3') {
                             continue;
                         }
+                    }
+                    catch (e) {
+                        console.error(e);
+                        continue;
+                    }
 
-                        file = _file;
+                    let tags;
+                    let cover;
 
-                        const tags = await musicMetadata.parseBlob(file);
-                        const {common: {album: albumName}} = tags;
+                    try {
+                        tags = await musicMetadata.parseBlob(file);
+                        const {common: {
+                            album: albumName,
+                            albumartist: albumArtist,
+                            picture: [{data, format}]
+                        }} = tags;
 
-                        commit(mutation.ADD_SONGS, [{
-                            tags, handle
-                        }]);
-                        // commit(mutation.ADD_SONG_TO_ALBUM, {
-                        //     album: '1',
-                        //     handle: '2',
-                        //     tags: '3',
-                        // });
+                        if (data && format) {
+                            var blob = new Blob([data], {type: format});
+                            cover = URL.createObjectURL(blob);
+                        }
 
                         commit(mutation.ADD_SONG_TO_ALBUM, {
-                            albumName,
                             handle,
                             tags,
+                            cover,
+                            albumName,
+                            albumArtist,
                         });
                     }
                     catch (e) {
                         console.error(e);
                     }
+
+                    commit(mutation.ADD_SONGS, [{
+                        handle,
+                        tags,
+                        cover,
+                    }]);
                 }
             }
             catch (e) {
@@ -83,11 +106,9 @@ export default new Vuex.Store({
     },
     getters: {
         albums({albums}) {
-            console.log('get albums')
             return albums;
         },
         titles({songs}) {
-            console.log('get titles')
             return songs;
         }
     },
