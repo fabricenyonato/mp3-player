@@ -10,49 +10,53 @@ export default new Vuex.Store({
     state: {
         songs: [],
         albums: [],
+        playlist: [],
+        volume: 50,
+        songIndex: 0,
+        song: null,
     },
     mutations: {
-        [mutation.ADD_SONGS] ({songs}, newSongs) {
+        [mutation.CHANGE_VOLUME]({volume}, _volume) {
+            volume = _volume;
+        },
+        [mutation.ADD_SONGS]({songs}, newSongs) {
             songs.push(...newSongs);
         },
-        [mutation.ADD_SONG_TO_ALBUM] ({albums}, {albumName, handle, tags, albumArtist, cover}) {
-            let album = albums.findIndex((i) => i.name === albumName);
+        [mutation.ADD_SONG_TO_ALBUM]({albums}, {album, handle, tags, albumartist, cover}) {
+            let index = albums.findIndex((i) => i.name === album);
 
-            if (album === -1) {
+            if (index === -1) {
                 const newLength = albums.push({
-                    name: albumName,
+                    name: album,
                     titles: [],
                 });
 
-                album = newLength - 1;
+                index = newLength - 1;
             }
 
-            if (!albums[album].artist) {
-                albums[album].artist = albumArtist;
+            if (!albums[index].artist) {
+                albums[index].artist = albumartist;
             }
 
-            if (!albums[album].cover) {
-                albums[album].cover = cover;
+            if (!albums[index].cover) {
+                albums[index].cover = cover;
             }
 
-            albums[album].titles.push({handle, tags});
+            albums[index].titles.push({handle, tags});
         },
+        [mutation.PLAY_SONG](state, song) {
+            state.song = song;
+        }
     },
     actions: {
-        async [action.addMusic] ({commit}) {
+        async [action.addMusic]({commit}) {
             try {
                 const filesHandles = await getMP3FilesHandles();
 
                 for (const handle of filesHandles) {
-                    /**
-                     * @type {File}
-                     */
                     let file;
 
                     try {
-                        /**
-                         * @type {File}
-                         */
                         file = await handle.getFile();
 
                         if (file.type !== 'audio/mp3') {
@@ -64,28 +68,35 @@ export default new Vuex.Store({
                         continue;
                     }
 
-                    let tags;
                     let cover;
+                    let title;
+                    let album;
+                    let artists;
 
                     try {
-                        tags = await musicMetadata.parseBlob(file);
-                        const {common: {
-                            album: albumName,
-                            albumartist: albumArtist,
-                            picture: [{data, format}]
-                        }} = tags;
+                        const {common} = await musicMetadata.parseBlob(file);
+
+                        title = common.title;
+                        album = common.album;
+                        artists = common.artists;
+
+                        const {
+                            albumartist,
+                            picture: [{data, format}],
+                        } = common;
 
                         if (data && format) {
-                            var blob = new Blob([data], {type: format});
+                            const blob = new Blob([data], {type: format});
                             cover = URL.createObjectURL(blob);
                         }
 
                         commit(mutation.ADD_SONG_TO_ALBUM, {
                             handle,
-                            tags,
+                            albumartist,
                             cover,
-                            albumName,
-                            albumArtist,
+                            album,
+                            title,
+                            artists
                         });
                     }
                     catch (e) {
@@ -94,8 +105,10 @@ export default new Vuex.Store({
 
                     commit(mutation.ADD_SONGS, [{
                         handle,
-                        tags,
                         cover,
+                        album,
+                        title,
+                        artists
                     }]);
                 }
             }
@@ -103,14 +116,10 @@ export default new Vuex.Store({
                 throw e;
             }
         },
-    },
-    getters: {
-        albums({albums}) {
-            return albums;
-        },
-        titles({songs}) {
-            return songs;
+        [action.playSong]({commit}, song) {
+            commit(mutation.PLAY_SONG, song);
         }
     },
+    getters: {},
     strict: true,
 });

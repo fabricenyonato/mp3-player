@@ -29,17 +29,17 @@
             <router-view />
         </div>
 
-        <app-player />
+        <player v-if="$store.state.song" />
     </div>
 </template>
 
 <script>
     import {mapActions} from 'vuex';
-    import AppPlayer from './player.vue';
+    import Player from './player.vue';
     import {action} from './var';
 
     export default {
-        components: {AppPlayer},
+        components: {Player},
         methods: {
             ...mapActions([action.addMusic])
         },

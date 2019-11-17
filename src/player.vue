@@ -1,5 +1,5 @@
 <template>
-    <div id="player" class="flex-shrink-0 flex-grow-0 d-flex elevation-4">
+    <div class="flex-shrink-0 flex-grow-0 d-flex elevation-4">
         <div class="flex-grow-0 flex-shrink-0">
             <v-list style="background-color: transparent;">
                 <v-list-item to="/playlist">
@@ -8,8 +8,8 @@
                     </v-list-item-avatar>
 
                     <v-list-item-content>
-                        <v-list-item-title>Title</v-list-item-title>
-                        <v-list-item-subtitle>Artist</v-list-item-subtitle>
+                        <v-list-item-title>{{song.title}}</v-list-item-title>
+                        <v-list-item-subtitle>{{song.artists}}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -53,46 +53,40 @@
             </div>
 
             <div class="d-flex align-center">
-                <v-btn icon @click="volume -= volStep" :disabled="volume === 0">
+                <v-btn icon>
                     <v-icon>mdi-volume-minus</v-icon>
                 </v-btn>
 
                 <v-slider
                     v-model="volume"
                     hide-details
-                    style="width: 100px;"
+                    style="width: 150px;"
                     :min="0"
                     :max="100"
-                    :step="volStep"
+                    :step="volumeStep"
                 />
-
-                <v-btn icon @click="volume += volStep" :disabled="volume === 100">
-                    <v-icon>mdi-volume-plus</v-icon>
-                </v-btn>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import {mapMutations, mapState} from 'vuex';
+    import {mutation, volumeStep} from './var';
+
     export default {
-        data: () => ({
-            volume: 50,
-        }),
-        methods: {
-            changeVolume(sens) {
-                const step = ((sens === '+') ? 1 : -1) * 10;
-            }
-        },
+        methods: mapMutations([mutation.CHANGE_VOLUME]),
         computed: {
-            volStep: () => 10,
+            volumeStep: () => volumeStep,
+            volume: {
+                get() {
+                    this.$store.state.volume;
+                },
+                set(value) {
+                    this.CHANGE_VOLUME(value);
+                }
+            },
+            ...mapState(['song'])
         }
     }
 </script>
-
-<style lang="scss" scoped>
-    // #cover {
-    //     height: 37px;
-    //     width: 37px;
-    // }
-</style>
