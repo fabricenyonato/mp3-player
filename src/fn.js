@@ -2,7 +2,7 @@
  * @returns {Promise<FileSystemFileHandle[]>}
  */
 export async function getMP3FilesHandles() {
-    const opts = {type: 'openDirectory'};
+    const opts = {type: 'open-directory'};
 
     const f = async (entries) => {
         const files = [];

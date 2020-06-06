@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as musicMetadata from 'music-metadata-browser';
+import {Howl} from 'howler';
 import {mutation, action} from './var';
 import {getMP3FilesHandles} from './fn';
 
@@ -43,9 +44,23 @@ export default new Vuex.Store({
             }
 
             albums[index].titles.push({handle, tags});
+            console.log(albums);
         },
         [mutation.PLAY_SONG](state, song) {
             state.song = song;
+
+            reader.addEventListener('load', function() {
+                var data = reader.result;
+
+                var sound = new Howl({
+                    src: data,
+                    format: file.name.split('.').pop().toLowerCase()
+                });
+
+                sound.play();
+            });
+
+            reader.readAsDataURL(file);
         }
     },
     actions: {
@@ -59,7 +74,7 @@ export default new Vuex.Store({
                     try {
                         file = await handle.getFile();
 
-                        if (file.type !== 'audio/mp3') {
+                        if (['audio/mp3', 'audio/mpeg'].indexOf(file.type) === -1) {
                             continue;
                         }
                     }
@@ -113,6 +128,7 @@ export default new Vuex.Store({
                 }
             }
             catch (e) {
+                console.error(e);
                 throw e;
             }
         },
