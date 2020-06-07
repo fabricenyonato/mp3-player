@@ -17,3 +17,6 @@ npm run build
 
 ### En
 See (https://web.dev/native-file-system/#how-to-use).
+
+### Screenshot
+![screenshot](https://github.com/fabricenyonato/mp3-player/blob/master/screenshot.png)
