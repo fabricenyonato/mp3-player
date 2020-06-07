@@ -1,5 +1,8 @@
 # mp3-player
 
+### Using the Native File System API
+See (https://web.dev/native-file-system/#how-to-use).
+
 ## Project setup
 ```
 npm install
@@ -14,9 +17,6 @@ npm run serve
 ```
 npm run build
 ```
-
-### En
-See (https://web.dev/native-file-system/#how-to-use).
 
 ### Screenshot
 ![screenshot](https://github.com/fabricenyonato/mp3-player/blob/master/screenshot.png)
