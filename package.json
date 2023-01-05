@@ -22,7 +22,7 @@
     "@vue/cli-plugin-pwa": "^4.0.0",
     "@vue/cli-plugin-router": "^4.0.0",
     "@vue/cli-plugin-vuex": "^4.0.5",
-    "@vue/cli-service": "^4.0.0",
+    "@vue/cli-service": "^5.0.8",
     "node-sass": "^4.14.1",
     "sass": "^1.19.0",
     "sass-loader": "^8.0.0",
